@@ -32,7 +32,11 @@ kubectl delete deployment sentry-kubernetes
 
 kubectl delete services hello-minikub
 ```
-
+or
+```
+# kubectl delete deployment memory-demo-3 doesn't work so...
+kubectl delete -n default pod memory-demo-3
+```
 
 ### MINIKUBE FINISH
 ```
@@ -58,6 +62,8 @@ kubectl get events <-- see events that sentry-kubernetes isn't capturing
 kubectl get services
 kubectl config view
 kubectl get namespaces
+kubectl logs <name> <--- to see logs of the pod, not to be confused with Events of the pod.
+kubectl get sa <---get service accounts
 ```
 ### SENTRY-KUBERNETES POD START
 ```
@@ -74,7 +80,7 @@ MEMORY https://kubernetes.io/docs/tasks/configure-pod-container/assign-memory-re
 
 "Specify a Memory request that is too big for your nodes"  
 ```
-kubectl create namespace cpu-example
+NO - kubectl create namespace cpu-example
 kubectl apply -f https://k8s.io/examples/pods/resource/cpu-request-limit-2.yaml --namespace=cpu-example
 
 kubectl describe pod cpu-demo-2 --namespace=cpu-example
@@ -91,6 +97,11 @@ kubectl get events
 ^^ nor did it get captured by sentry-kubernetes
 ```
 
+so...
+
+kubectl apply -f ./cpu-request-limit-2.yaml
+kubectl apply -f ./memory-request-limit-3.yaml
+
 
 # Next
 10/18/19
@@ -106,3 +117,17 @@ https://github.com/getsentry/sentry-kubernetes/issues/4
 
 kubectl logs sentry-kubernetes-5dbfb4597f-xr7kj
 ```
+
+
+
+2:50p
+kubectl create sa sentry-kubernetes
+kubectl create clusterrole sentry-kubernetes --verb=get,list,watch --resource=events
+kubectl create clusterrolebinding sentry-kubernetes --clusterrole=sentry-kubernetes --user=sentry-kubernetes
+
+kubectl run sentry-kubernetes \
+  --image getsentry/sentry-kubernetes \
+  --serviceaccount=sentry-kubernetes \
+  --env="DSN=https://cc7b02dae7444f0fb19bd5170c11996b@sentry.io/1783432"
+
+kubectl logs sentry-kubernetes-5554b747fc-zb4hv
