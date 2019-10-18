@@ -90,3 +90,19 @@ kubectl get events
 
 ^^ nor did it get captured by sentry-kubernetes
 ```
+
+
+# Next
+10/18/19
+```
+I feel like youd' need to create ACLs for this.
+
+Some RBAC stuff.
+
+
+> Basically, communicating to Kubernetes API from internal, needs permissions assigned to it.
+
+https://github.com/getsentry/sentry-kubernetes/issues/4
+
+kubectl logs sentry-kubernetes-5dbfb4597f-xr7kj
+```
