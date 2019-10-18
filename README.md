@@ -68,7 +68,11 @@ kb get pod sentry-kubernetes-5dbfb4597f-xr7kj
 ```
 
 ### CREATE A POD THAT REQUESTS TOO MANY RESOURCES FROM A NODE
-"Specify a CPU request that is too big for your nodes"  
+CPU https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/#specify-a-cpu-request-that-is-too-big-for-your-nodes  
+vs
+MEMORY https://kubernetes.io/docs/tasks/configure-pod-container/assign-memory-resource/
+
+"Specify a Memory request that is too big for your nodes"  
 ```
 kubectl create namespace cpu-example
 kubectl apply -f https://k8s.io/examples/pods/resource/cpu-request-limit-2.yaml --namespace=cpu-example
