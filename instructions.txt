@@ -20,8 +20,6 @@ minikube version: v1.4.0
 commit: 7969c25a98a018b94ea87d949350f3271e9d64b6
 
 
-
-
 ➜  ~ minikube start
 😄  minikube v1.4.0 on Darwin 10.14.4
 💿  Downloading VM boot image ...
@@ -38,11 +36,8 @@ commit: 7969c25a98a018b94ea87d949350f3271e9d64b6
 ➜  ~
 
 
-
-
-So kluster is like a thing that starts running, stays running. so not exactly like a docker container.
-yes the klusterr is not the/a container itself
-
+So cluster is like a thing that starts running, stays running. so not exactly like a docker container.
+yes the clusterr is not the/a container itself - it is more like the VM (well it's running on the VM)
 
 
 'minikube' is the cluster itself
@@ -54,6 +49,7 @@ kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.10
 PART II
 ...is the SEorganization sentry go projects Kubernetes
 https://github.com/getsentry/sentry-kubernetes
+
 kubectl run sentry-kubernetes \
   --image getsentry/sentry-kubernetes \
   --env="DSN=https://cc7b02dae7444f0fb19bd5170c11996b@sentry.io/1783432"
@@ -63,17 +59,15 @@ NAME                                 READY   STATUS    RESTARTS   AGE
 hello-minikube-797f975945-v78qq      1/1     Running   0          2m7s
 sentry-kubernetes-5dbfb4597f-n9wwb   1/1     Running   0          8m41s
 
-
-
-kubectl delete deployment hello-minikube
-kubectl delete deployment sentry-kubernetes
-
-
-
-
 QUESTIONS:
 kubectl create deployment <name>
 vs.
 kubectl run <name>
 ?
 https://stackoverflow.com/questions/48015637/kubernetes-kubectl-run-vs-create-and-apply
+
+
+
+10/18/19
+GREAT TUTORIAL WITH ALL INSTRUCTIONS
+https://kubernetes.io/docs/tutorials/hello-minikube/
