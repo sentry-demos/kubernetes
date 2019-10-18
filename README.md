@@ -72,7 +72,6 @@ kb get pod sentry-kubernetes-5dbfb4597f-xr7kj
 ```
 kubectl create namespace cpu-example
 kubectl apply -f https://k8s.io/examples/pods/resource/cpu-request-limit-2.yaml --namespace=cpu-example
-kubectl get pod cpu-demo-2 --namespace=cpu-example <--- doesn't show yet in kubectl get pods
 
 kubectl describe pod cpu-demo-2 --namespace=cpu-example
 ...
