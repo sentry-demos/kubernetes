@@ -10,7 +10,9 @@ you need to download kubectl and minikube
 apply vs create vs run?  
 
 ### MINIKUBE START
+```
 minikube start
+```
 
 ### POD START
 ```
@@ -24,23 +26,31 @@ describe pod hello-minikube-797f975945-b87ns
 ```
 
 ### POD FINISH
+```
 kubectl delete deployment hello-minikube
 kubectl delete deployment sentry-kubernetes
 
-kubectl delete service hello-minikube?
+kubectl delete services hello-minikub
+```
+
 
 ### MINIKUBE FINISH
+```
 minikube stop
 minikube delete
-
+```
 
 ## EXTRA
 ### MINIKUBE
 `minikube -help`
-minikube dashboard - http://127.0.0.1:50159/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/#/overview?namespace=default
+
+```
+minikube dashboard <--http://127.0.0.1:50159/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/#/overview?namespace=default
 minikube addons list
+```
 ### KUBECTL
 `kubectl get -h`
+```
 kubectl get deployments
 kubectl describe pod <name>
 kubectl get pods
@@ -48,13 +58,14 @@ kubectl get events <-- see events that sentry-kubernetes isn't capturing
 kubectl get services
 kubectl config view
 kubectl get namespaces
-
+```
 ### SENTRY-KUBERNETES POD START
+```
 kubectl run sentry-kubernetes \
   --image getsentry/sentry-kubernetes \
   --env="DSN=https://cc7b02dae7444f0fb19bd5170c11996b@sentry.io/1783432"
 kb get pod sentry-kubernetes-5dbfb4597f-xr7kj
-
+```
 
 ### CREATE A POD THAT REQUESTS TOO MANY RESOURCES FROM A NODE
 "Specify a CPU request that is too big for your nodes"  
