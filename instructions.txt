@@ -1,0 +1,79 @@
+PART I
+have VM VirtualBox. a virtualbox starts when I run minikube:
+`Creating virtualbox VM (CPUs=2, Memory=2000MB, Disk=20000MB) ...`
+
+
+
+kubectl version
+brew install kubectl...didnt upgrade
+followed these instructs https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-macos to upgrade from 1.14 to 1.16
+
+`curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/darwin/amd64/kubectl
+` for latest stable version, 1.16. There are 1.17's on githu
+
+brew cask install minikube
+sudo curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64 \
+
+
+➜  ~ minikube version
+minikube version: v1.4.0
+commit: 7969c25a98a018b94ea87d949350f3271e9d64b6
+
+
+
+
+➜  ~ minikube start
+😄  minikube v1.4.0 on Darwin 10.14.4
+💿  Downloading VM boot image ...
+    > minikube-v1.4.0.iso.sha256: 65 B / 65 B [--------------] 100.00% ? p/s 0s
+    > minikube-v1.4.0.iso: 135.73 MiB / 135.73 MiB [-] 100.00% 16.61 MiB p/s 8s
+🔥  Creating virtualbox VM (CPUs=2, Memory=2000MB, Disk=20000MB) ...
+🐳  Preparing Kubernetes v1.16.0 on Docker 18.09.9 ...
+💾  Downloading kubeadm v1.16.0
+💾  Downloading kubelet v1.16.0
+🚜  Pulling images ...
+🚀  Launching Kubernetes ...
+⌛  Waiting for: apiserver proxy etcd scheduler controller dns
+🏄  Done! kubectl is now configured to use "minikube"
+➜  ~
+
+
+
+
+So kluster is like a thing that starts running, stays running. so not exactly like a docker container.
+yes the klusterr is not the/a container itself
+
+
+
+'minikube' is the cluster itself
+'kubectl' is tool for hitting it up
+
+kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.10
+
+
+PART II
+...is the SEorganization sentry go projects Kubernetes
+https://github.com/getsentry/sentry-kubernetes
+kubectl run sentry-kubernetes \
+  --image getsentry/sentry-kubernetes \
+  --env="DSN=https://cc7b02dae7444f0fb19bd5170c11996b@sentry.io/1783432"
+
+➜  will-kubernetes kubectl get pod
+NAME                                 READY   STATUS    RESTARTS   AGE
+hello-minikube-797f975945-v78qq      1/1     Running   0          2m7s
+sentry-kubernetes-5dbfb4597f-n9wwb   1/1     Running   0          8m41s
+
+
+
+kubectl delete deployment hello-minikube
+kubectl delete deployment sentry-kubernetes
+
+
+
+
+QUESTIONS:
+kubectl create deployment <name>
+vs.
+kubectl run <name>
+?
+https://stackoverflow.com/questions/48015637/kubernetes-kubectl-run-vs-create-and-apply
