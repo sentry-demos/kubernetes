@@ -5,6 +5,9 @@ could
 "Hello World Node.js app on Kubernetes using Minikube and Katacoda"  
 https://kubernetes.io/docs/tutorials/hello-minikube/#create-a-deployment
 
+cheatsheet  
+https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+
 ### Pre-Req
 download `kubectl` and `minikube`
 
@@ -24,7 +27,7 @@ http://192.168.99.101:32237 <--- can now access it on this URL
 describe pod hello-minikube-797f975945-b87ns
 ```
 
-### POD FINISH
+### POD STOP / DELETE
 ```
 kubectl delete deployment hello-minikube
 kubectl delete deployment sentry-kubernetes
@@ -35,9 +38,12 @@ or
 ```
 # kubectl delete deployment memory-demo-3 doesn't work so...
 kubectl delete -n default pod memory-demo-3
+
+# WORKS
+kb delete -n default pod cpu-demo-2
 ```
 
-### MINIKUBE FINISH
+### MINIKUBE STOP / DELETE
 ```
 minikube stop
 minikube delete
@@ -103,23 +109,20 @@ nor did it get captured by sentry-kubernetes
 
 
 # Next
-10/18/19
+
+1.
 ```
-I feel like youd' need to create ACLs for this.
-
-Some RBAC stuff.
-
-
-> Basically, communicating to Kubernetes API from internal, needs permissions assigned to it.
-
+kubectl logs <sentry-kubernetes>
+  2019-10-28 18:04:05,554 Exception when calling CoreV1Api->list_event_for_all_namespaces: (403)
+  Reason: Forbidden
+  HTTP response headers: HTTPHeaderDict({'Cache-Control': 'no-cache, private', 'Content-Type': 'application/json', 'X-Content-Type-Options': 'nosniff', 'Date': 'Mon, 28 Oct 2019 18:04:05 GMT', 'Content-Length': '291'})
+  HTTP response body: b'{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"events is forbidden: User \\"system:serviceaccount:default:sentry-kubernetes\\" cannot watch resource \\"events\\" in API group \\"\\" at the cluster scope","reason":"Forbidden","details":{"kind":"events"},"code":403}\n'
+```
+^^ needs RBAC (Remote Based Access Controls)
 https://github.com/getsentry/sentry-kubernetes/issues/4
 
-kubectl logs sentry-kubernetes-5dbfb4597f-xr7kj
-```
 
-
-
-note
+2. DID THIS...
 ```
 kubectl create sa sentry-kubernetes
 kubectl create clusterrole sentry-kubernetes --verb=get,list,watch --resource=events
@@ -129,6 +132,66 @@ kubectl run sentry-kubernetes \
   --image getsentry/sentry-kubernetes \
   --serviceaccount=sentry-kubernetes \
   --env="DSN=https://cc7b02dae7444f0fb19bd5170c11996b@sentry.io/1783432"
-
-kubectl logs sentry-kubernetes-5554b747fc-zb4hv
 ```
+STILL FAILS... w/ same Forbidden403 error
+
+
+DEBUG...
+```
+# show info, look for sa/security/roles/clusterRolebinding
+kubectl get deployment sentry-kubernetes -o yaml  
+```
+
+3. SOLUTIONS  
+TO TRY?
+
+Q1.
+```
+# when you run `create clusterrolebinding` you can specify `--template` to pass this:
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: sentry-kubernetes
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: sentry-kubernetes
+  apiGroup: rbac.authorization.k8s.io  
+subjects:
+- kind: ServiceAccount
+  name: sentry-kubernetes
+  namespace: default  
+
+^^ Chnkr suggested using this: https://github.com/getsentry/sentry-kubernetes/issues/4#issuecomment-362572154
+
+so instead of:
+kubectl create clusterrolebinding sentry-kubernetes --clusterrole=sentry-kubernetes --user=sentry-kubernetes
+
+do this:
+kubectl create clusterrolebinding sentry-kubernetes --clusterrole=sentry-kubernetes --user=sentry-kubernetes --template custom-clusterrolebinding.yaml
+
+However, 'template' is for some golang type of template :(
+
+Docs:
+https://kubernetes.io/docs/reference/access-authn-authz/rbac/#kubectl-create-clusterrole
+https://kubernetes.io/docs/reference/access-authn-authz/rbac/#kubectl-create-clusterrolebinding
+https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-em-clusterrolebinding-em-
+```
+
+Q.2
+Need to run this? where from and when? cluster/minikube
+```
+"To enable RBAC, start the apiserver with --authorization-mode=RBAC."  
+https://kubernetes.io/docs/reference/access-authn-authz/rbac/#kubectl-create-clusterrolebinding
+```
+
+TO TRY?  
+'secret'
+```
+secrets:
+- name: sentry-kubernetes-token-nq2f9
+```
+
+TO TRY?  
+FWIW instead of using a cluster role you can also use a normal role and pass in the EVENT_NAMESPACES environment variable to limit monitoring to specific namespaces.
