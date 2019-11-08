@@ -5,7 +5,7 @@
 **Pod 2 -** consumes errors from K8S Cluster and sends them to Sentry.io
 
 **Overview**
-1. This demo involves running 2 kubernetes pods.  
+1. This demo involves running 2 kubernetes pods and the kubernetes cluster.
 
 2. **Pod 1** requests too many resources (CPU/RAM) from the K8S cluster, and thus causes an error that gets sent into the Kubernetes Steam/log of Events
 
