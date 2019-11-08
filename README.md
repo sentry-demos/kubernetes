@@ -28,7 +28,7 @@ Some commands need to be run for `serviceaccounts` and `clusterroles`, or else t
 
 - Don't let the power of Capture Message stop here. You can use it in any major language or framework as it's available in all of our [SDK's](http://sentry.io/platforms). 
 
-- You can define any arbitrary piece of data to sentry's `capture_message` function for sending to Sentry.io as an Event. This helps add extra information context to your overall tech stack, in addition to the usual places where you use Sentry (REST API's, front-end Javascript). This demo **exemplifies** this power/visibility by using it with Kubernetes.
+- You can define any arbitrary piece of data as an input to sentry's `capture_message` function for sending it to Sentry.io as an Event. This helps add extra information context to your overall tech stack, in addition to the usual places where you use Sentry (REST API's, front-end Javascript). This demo **exemplifies** this power/visibility by using it with Kubernetes.
 
 
 ## Setup
@@ -40,6 +40,7 @@ Some commands need to be run for `serviceaccounts` and `clusterroles`, or else t
 
 #### Steps
 1. `git clone git@github.com:sentry-native/sentry-native.git`
+2. create a project on Sentry.io and get your DSN (API) key ready for running the sentry-kubernetes container
 2. [start minikube](#start-minikube)
 3. [configure service accounts and clusterroles](#Configure-Service-Accounts-and-Cluster-Roles)
 4. [start pods (2)](#START-POD-sentry-kubernetes)
