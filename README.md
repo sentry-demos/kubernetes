@@ -175,7 +175,9 @@ However, 'template' is for some golang type of template :(
 
 Docs:
 https://kubernetes.io/docs/reference/access-authn-authz/rbac/#kubectl-create-clusterrole
-https://kubernetes.io/docs/reference/access-authn-authz/rbac/#kubectl-create-clusterrolebinding
+https://kubernetes.io/docs/refe
+
+rence/access-authn-authz/rbac/#kubectl-create-clusterrolebinding
 https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-em-clusterrolebinding-em-
 ```
 
@@ -195,3 +197,23 @@ secrets:
 
 TO TRY?  
 FWIW instead of using a cluster role you can also use a normal role and pass in the EVENT_NAMESPACES environment variable to limit monitoring to specific namespaces.
+
+
+```
+kb get pod sentry-kubernetes-69f9bbdfc7-mfn52 -o yaml
+kb get clusterrole sentry-kubernetes -o yaml
+kb get clusterrolebinding sentry-kubernetes -o yaml
+```
+
+ kb get serviceaccounts/sentry-kubernetes -o yaml
+
+-------------------------
+kubectl scale deployment sentry-kubernetes --replicas=1
+kubectl scale deployment sentry-kubernetes --replicas=0
+
+kubectl create clusterrolebinding sentry-kubernetes --clusterrole=sentry-kubernetes --serviceaccount=sentry-kubernetes
+
+kubectl delete clusterrolebinding sentry-kubernetes
+
+kubectl create clusterrolebinding sentry-kubernetes --clusterrole=sentry-kubernetes --serviceaccount=default:sentry-kubernetes
+kubectl create clusterrolebinding sentry-kubernetes --clusterrole=sentry-kubernetes --serviceaccount=sentry-kubernetes
