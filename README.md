@@ -1,6 +1,8 @@
 # Overview  
 This is not a Sentry Kubernetes SDK / designed for K8. THink of it as a demo, a use case, an application/impelmentaiton of Sentry (method).
-This repo is for capturing Kubernetes Stream [Events](https://www.bluematador.com/blog/kubernetes-events-explained) using Sentry. [Log](https://kubernetes.io/docs/concepts/cluster-administration/logging/). There is nothing inherently different about how Sentry does this.
+This repo is for capturing Kubernetes Stream [Events](https://www.bluematador.com/blog/kubernetes-events-explained) using Sentry. [Log](https://kubernetes.io/docs/concepts/cluster-administration/logging/). There is nothing inherently different about how Sentry does this.  
+
+...in a docker container that does the work for you, here's the code [getsentry/sentry-kubernetes](https://github.com/getsentry/sentry-kubernetes) for it if you're curious. also [hub.docker getsentry/sentry-kubernetes](https://hub.docker.com/r/getsentry/sentry-kubernetes)
 
 This is not a new Sentry SDk designed specifically for Kubernetes.
 It's a method that comes with every SEntry SDK for 'Capruring a Message' which takes any arbitrary piece of data you pass it. So this repo is in Python but you could do something else.
@@ -151,4 +153,7 @@ https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 "Create a Pod that Requests too many resources from a Node"  
 CPU or Memory  
 https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/#specify-a-cpu-request-that-is-too-big-for-your-nodes  
-https://kubernetes.io/docs/tasks/configure-pod-container/assign-memory-resource/
+https://kubernetes.io/docs/tasks/configure-pod-container/assign-memory-resource/  
+
+other users who made their own sentry-kubernetes  
+https://hub.docker.com/search?q=sentry-kubernetes&type=image
