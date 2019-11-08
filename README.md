@@ -17,7 +17,7 @@
 #### NOTES ON WHAT POD 2 DOES
 The docker image used for pod2 is here [hub.docker getsentry/sentry-kubernetes](https://hub.docker.com/r/getsentry/sentry-kubernetes).
 
-The docker container runs `sentry-kuernetes.py` which watches/consumes the Kubernetes Stream and has logic for evaluating if the activity is something benign/ignorable or errorneous/problematic, in which case it uses Sentry's `capture_message` method to capture and send it to Sentry.io.
+The docker container runs `sentry-kubernetes.py` which watches/consumes the Kubernetes Stream and has logic for evaluating if the activity is something benign/ignorable or errorneous/problematic, in which case it uses Sentry's `capture_message` method to capture and send it to Sentry.io.
 
 It decides for you what is an Event or not, but you could amplify the logic with your own by updating `sentry-python.py` and DIY re-making your own image/k8pod. This way, you can decide what constitutes an 'error' or *anything you want to be notified about on Sentry.io*. The source code is here [getsentry/sentry-kubernetes/sentry-kubernetes.py](https://github.com/getsentry/sentry-kubernetes/blob/master/sentry-kubernetes.py)
 
