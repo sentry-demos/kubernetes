@@ -157,3 +157,6 @@ https://kubernetes.io/docs/tasks/configure-pod-container/assign-memory-resource/
 
 other users who made their own sentry-kubernetes  
 https://hub.docker.com/search?q=sentry-kubernetes&type=image
+
+**Bonus** Sentry Helm Charts  
+https://github.com/helm/charts/tree/master/stable/sentry
