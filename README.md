@@ -1,31 +1,32 @@
 # Overview
-1. This demo involves running 2 kubernetes pods.
-2. The first pod requests too many resources (CPU/RAM) from the K8 cluster, and thus causes an error that gets sent into the Kubernetes Steam/log of Events
-3. The second pod uses the Sentry Python SDK to capture this error from the Kubernetes Stream and send it as a Event to Sentry.io
-4. Docker Images and yaml's are used for both of these pods. If you want to see or update the python source code for the second pod, see https://github.com/getsentry/sentry-kubernetes/blob/master/sentry-kubernetes.py
+#### HOW THIS DEMO WORKS
+1. This demo involves running 2 kubernetes pods.  
+**Pod 1** requests too many resources (CPU/RAM) from the K8 cluster, and thus causes an error that gets sent into the Kubernetes Steam/log of Events
 
+**Pod 2** uses the Sentry Python SDK to capture this error from the Kubernetes Stream and send it as a Event to Sentry.io
+
+2. Docker Images and yaml's are provided for both of these pods. If you want to see or update the python source code for the second pod, see https://github.com/getsentry/sentry-kubernetes/blob/master/sentry-kubernetes.py
+
+#### WHAT POD 2 DOES
 **NOTE** sentry-kubernetes.py "watches"/consumes the Kubernetes Stream and has logic for evaluating if it's something benign (ignorable) or errorneous/problematic, in which case it will pass to Sentry's `capture_message` method which will send it to Sentry.io. The docker image that will run this sentry-kuernetes.py is here [hub.docker getsentry/sentry-kubernetes](https://hub.docker.com/r/getsentry/sentry-kubernetes)
 
 **NOTE** - Don't let the power of Capture Message stop here. You can use it in any major language or framework as it's available in all of our [SDK's](http://sentry.io/platforms). 
 
 **NOTE** - You can define any arbitrary piece of data to sentry's `capture_message` function for sending to Sentry.io as an Event. This helps add extra information context to your overall tech stack, in addition to the usual places where you use Sentry (REST API's, front-end Javascript). This demo **exemplifies** this power/visibility by using it with Kubernetes.
 
-...Attention give to `serviceaccounts` clsuterroles, as this would prevent communication from sentry kubernetes pod from accessing kuberentes stream.
+**NOTE** - It decides for you what is an EVent or not but you could amplify the logic with your own by updating sentry-python.py and re-making your own image/k8pod.
 
-#### How this demo works
-Kubernetes Pod 1 - emits errors (by trying to use too much CPU)
-^ these errors make there way into the "kubernetes" Stream/Log
+**NOTE** Attention give to `serviceaccounts` clsuterroles, as this would prevent communication from sentry kubernetes pod from accessing kuberentes stream.
 
-Kubernetes Pod 2 - sentry-kubernetes - is basically a while loop listening to the Kubernetes EVent stream.
-
-It decides for you what is an EVent or not but you could amplify the logic with your own by updating sentry-python.py and re-making your own image/k8pod.
+#### review...
+Kubernetes Pod 1 - emits errors (by trying to use too much CPU). These errors make there way into the "kubernetes" Stream/Log  
+Kubernetes Pod 2 - sentry-kubernetes - watches/consumes the Kubernetes EVent stream.
 
 #### Versions
 kbctl 1.16  
 kbctl Client Version v1.16.2  
 kbctl Server Version v1.16.0  
 minikube version: v1.4.0  
-
 
 ## Setup / RUN
 #### Prerequisites
