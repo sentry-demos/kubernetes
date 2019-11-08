@@ -2,7 +2,8 @@
 ## HOW THIS DEMO WORKS
 **TL;DR**  
 **Pod 1 -** sends errors to the K8S Cluster  
-**Pod 2 -** consumes errors from K8S Cluster and sends them to Sentry.io
+**Pod 2 -** consumes errors from K8S Cluster and sends them to Sentry.io  
+[Setup](#Setup)
 
 **Overview**
 1. This demo involves running 2 kubernetes pods and the kubernetes cluster.
@@ -57,11 +58,6 @@ kubectl create clusterrole sentry-kubernetes --verb=get,list,watch --resource=ev
 kubectl create clusterrolebinding sentry-kubernetes --clusterrole=sentry-kubernetes --serviceaccount=default:sentry-kubernetes
 or
 kubectl create clusterrolebinding sentry-kubernetes --clusterrole=sentry-kubernetes --serviceaccount=sentry-kubernetes
-
-kubectl run sentry-kubernetes \
-  --image getsentry/sentry-kubernetes \
-  --serviceaccount=sentry-kubernetes \
-  --env="DSN=https://cc7b02dae7444f0fb19bd5170c11996b@sentry.io/1783432"
 ```
 
 ### Working With PODS
@@ -70,8 +66,8 @@ kubectl run sentry-kubernetes \
 ```
 kubectl run sentry-kubernetes \
   --image getsentry/sentry-kubernetes \
+  --serviceaccount=sentry-kubernetes \
   --env="DSN=https://cc7b02dae7444f0fb19bd5170c11996b@sentry.io/1783432"
-kb get pod sentry-kubernetes-5dbfb4597f-xr7kj
 ```
 #### START cpu-request-limit POD
 ```
@@ -95,7 +91,7 @@ minikube stop
 minikube delete
 ```
 
-## USEFUL COMMANDS
+## Useful Commands
 `minikube -help`
 ```
 # launches http://127.0.0.1:50159/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/#/overview?namespace=default
@@ -106,6 +102,7 @@ minikube addons list
 ```
 kubectl get deployments
 kubectl get pods
+kubectl get pod sentry-kubernetes-5dbfb4597f-xr7kj
 kubectl describe pod # lists all, with statuses
 kubectl describe pod <name>
 kubectl get events <-- see events that sentry-kubernetes isn't capturing
@@ -118,7 +115,7 @@ kubectl logs <sentry-kubernetes>
 # shows info, look for sa/security/roles/clusterRolebinding
 kubectl get deployment sentry-kubernetes -o yaml  
 ```
-`serviceaccounts and clusterroles`
+serviceaccounts and clusterroles
 ```
 kb get pod sentry-kubernetes-69f9bbdfc7-mfn52 -o yaml
 kb get clusterrole sentry-kubernetes -o yaml
@@ -127,7 +124,7 @@ and
 kb get serviceaccounts/sentry-kubernetes -o yaml
 ```
 
-lastly....?
+troubleshooting...
 ```
 kubectl scale deployment sentry-kubernetes --replicas=1
 kubectl scale deployment sentry-kubernetes --replicas=0
@@ -139,21 +136,19 @@ kubectl create clusterrolebinding sentry-kubernetes --clusterrole=sentry-kuberne
 
 
 # Documentation 
-https://kubernetes.io/docs/tutorials/hello-minikube/  
-
-cheatsheet  
+Cheatsheet  
 https://kubernetes.io/docs/reference/kubectl/cheatsheet/  
 
 "Create a Pod that Requests too many resources from a Node" CPU or Memory  
 https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/#specify-a-cpu-request-that-is-too-big-for-your-nodes  
 https://kubernetes.io/docs/tasks/configure-pod-container/assign-memory-resource/  
 
-cluster administration logging  
+Cluster administration logging  
 https://kubernetes.io/docs/concepts/cluster-administration/logging/  
 
 **Bonus** Sentry Helm Charts  
 https://github.com/helm/charts/tree/master/stable/sentry  
 
-**Bonus** other developers in the open-source community have made their own versions of this:  
+**Bonus** Other developers in the open-source community have made their own versions of this:  
 https://hub.docker.com/search?q=sentry-kubernetes&type=image  
 https://github.com/stevelacy/go-sentry-kubernetes  
