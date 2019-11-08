@@ -1,5 +1,8 @@
 # Overview
-#### HOW THIS DEMO WORKS
+## HOW THIS DEMO WORKS
+**TL;DR**  
+Kubernetes Pod 1 - emits errors (by trying to use too much CPU). These errors make there way into the "kubernetes" Stream/Log  
+Kubernetes Pod 2 - sentry-kubernetes - watches/consumes the Kubernetes EVent stream.
 
 1. This demo involves running 2 kubernetes pods.  
 
@@ -23,17 +26,15 @@ Attention give to `serviceaccounts` clsuterroles, as this would prevent communic
 
 - You can define any arbitrary piece of data to sentry's `capture_message` function for sending to Sentry.io as an Event. This helps add extra information context to your overall tech stack, in addition to the usual places where you use Sentry (REST API's, front-end Javascript). This demo **exemplifies** this power/visibility by using it with Kubernetes.
 
-#### review...
-Kubernetes Pod 1 - emits errors (by trying to use too much CPU). These errors make there way into the "kubernetes" Stream/Log  
-Kubernetes Pod 2 - sentry-kubernetes - watches/consumes the Kubernetes EVent stream.
-
 #### Versions
+```
 kbctl 1.16  
 kbctl Client Version v1.16.2  
 kbctl Server Version v1.16.0  
 minikube version: v1.4.0  
+```
 
-## Setup / RUN
+## Setup
 #### Prerequisites
 `kubectl` and `minikube`  
 
