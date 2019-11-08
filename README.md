@@ -1,8 +1,8 @@
 # Overview
 ## HOW THIS DEMO WORKS
 **TL;DR**  
-Pod 1 - sends errors to the K8S Cluster  
-Pod 2 - consumes errors from K8S Cluster and sends them to Sentry.io
+**Pod 1 -** sends errors to the K8S Cluster  
+**Pod 2 -** consumes errors from K8S Cluster and sends them to Sentry.io
 
 **Overview**
 1. This demo involves running 2 kubernetes pods.  
@@ -40,7 +40,7 @@ Some commands need to be run for `serviceaccounts` and `clusterroles`, or else t
 #### Steps
 1. `git clone git@github.com:sentry-native/sentry-native.git`
 2. [start minikube](#start-minikube)
-3. [start pod(s)](#start-pod)
+3. [start pods (2)](#START-POD-sentry-kubernetes)
 4. see event on Sentry.io
 
 ### Start Minikube
@@ -49,39 +49,32 @@ https://kubernetes.io/docs/setup/learning-environment/minikube/#quickstart
 minikube start
 ```
 
-### Start Pod
+### WORKING WITH PODS
 
-#### SENTRY-KUBERNETES POD START
+#### START POD sentry-kubernetes
 ```
 kubectl run sentry-kubernetes \
   --image getsentry/sentry-kubernetes \
   --env="DSN=https://cc7b02dae7444f0fb19bd5170c11996b@sentry.io/1783432"
 kb get pod sentry-kubernetes-5dbfb4597f-xr7kj
 ```
-#### CREATE A POD THAT REQUESTS TOO MANY RESOURCES FROM A NODE
+#### START cpu-request-limit POD
 ```
 # Specifies a Memory/CPU resource request that is too big for your nodes"  
 kubectl apply -f ./cpu-request-limit-2.yaml
 kubectl apply -f ./memory-request-limit-3.yaml
 ```
 
-### Stop / Delete Pod
+### STOP/DELETE POD
 ```
 kubectl delete deployment hello-minikube
 kubectl delete deployment sentry-kubernetes
-
 kubectl delete services hello-minikub
-```
-or
-```
-# kubectl delete deployment memory-demo-3 doesn't work so...
 kubectl delete -n default pod memory-demo-3
-
-# WORKS
-kb delete -n default pod cpu-demo-2
+kubectl delete -n default pod cpu-demo-2
 ```
 
-### Stop / Delete Minikube
+### STOP/DELETE Minikube
 ```
 minikube stop
 minikube delete
@@ -89,7 +82,6 @@ minikube delete
 
 ## USEFUL COMMANDS
 `minikube -help`
-
 ```
 # launches http://127.0.0.1:50159/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/#/overview?namespace=default
 minikube dashboard
@@ -108,13 +100,7 @@ kubectl config view
 kubectl get namespaces
 kubectl logs <name> <--- to see logs of the pod, not to be confused with Events of the pod.
 kubectl get sa <---get service accounts
-```
-and
-```
 kubectl logs <sentry-kubernetes>
-```
-and
-```
 # show info, look for sa/security/roles/clusterRolebinding
 kubectl get deployment sentry-kubernetes -o yaml  
 ```
