@@ -1,19 +1,16 @@
-# Overview  
-This is not a Sentry Kubernetes SDK / designed for K8.
+# Overview
+1. This demo involves running 2 kubernetes pods.
+2. The first pod requests too many resources (CPU/RAM) from the K8 cluster, and thus causes an error that gets sent into the Kubernetes Steam/log of Events
+3. The second pod uses the Sentry Python SDK to capture this error from the Kubernetes Stream and send it as a Event to Sentry.io
+4. Docker Images and yaml's are used for both of these pods. If you want to see or update the python source code for the second pod, see https://github.com/getsentry/sentry-kubernetes/blob/master/sentry-kubernetes.py
 
-This is a demo implementation of the SEntry Python SDK that passes a Kubernetes Event object to the Sentry Python SDK for sending as an Sentry Event to Sentry.
+**NOTE** sentry-kubernetes.py "watches"/consumes the Kubernetes Stream and has logic for evaluating if it's something benign (ignorable) or errorneous/problematic, in which case it will pass to Sentry's `capture_message` method which will send it to Sentry.io. The docker image that will run this sentry-kuernetes.py is here [hub.docker getsentry/sentry-kubernetes](https://hub.docker.com/r/getsentry/sentry-kubernetes)
 
-There's logic built into the python here [getsentry/sentry-kubernetes/sentry-kubernetes.py](https://github.com/getsentry/sentry-kubernetes/blob/master/sentry-kubernetes.py) for evaluating the K8 Event as an exception or not, and you can run this python in a kubernetes pod using [hub.docker getsentry/sentry-kubernetes](https://hub.docker.com/r/getsentry/sentry-kubernetes), which is what this demo will focus on.
+**NOTE** - Don't let the power of Capture Message stop here. You can use it in any major language or framework as it's available in all of our [SDK's](http://sentry.io/platforms). 
 
-There's a python loop watching the Kubernetes Stream/Log [Events](https://www.bluematador.com/blog/kubernetes-events-explained) using Sentry. [Log](https://kubernetes.io/docs/concepts/cluster-administration/logging/).
-You can define any arbitrary piece of data to sentry's `capture_message` function for sending to Sentry.io as an Event.
+**NOTE** - You can define any arbitrary piece of data to sentry's `capture_message` function for sending to Sentry.io as an Event. This helps add extra information context to your overall tech stack, in addition to the usual places where you use Sentry (REST API's, front-end Javascript). This demo **exemplifies** this power/visibility by using it with Kubernetes.
 
-The code is in a docker image which you can run as a container. This is the python code it uses [getsentry/sentry-kubernetes](https://github.com/getsentry/sentry-kubernetes) and this is the docker image that this repo will instruct you to use. [hub.docker getsentry/sentry-kubernetes](https://hub.docker.com/r/getsentry/sentry-kubernetes)
-
-It's a method that comes with every Sentry SDK for 'Capruring a Message' which takes any arbitrary piece of data you pass it. So this repo is in Python but you could do something else.
-Attention give to `serviceaccounts` clsuterroles, as this would prevent communication from sentry kubernetes pod from accessing kuberentes stream.
-
-The power of Capture Message lives across all Sentry SDK's and **exemplifies** the power to let you decide what's errorneous, extra information to enhance the context...
+...Attention give to `serviceaccounts` clsuterroles, as this would prevent communication from sentry kubernetes pod from accessing kuberentes stream.
 
 #### How this demo works
 Kubernetes Pod 1 - emits errors (by trying to use too much CPU)
@@ -163,6 +160,9 @@ https://kubernetes.io/docs/tasks/configure-pod-container/assign-memory-resource/
 
 other users who made their own sentry-kubernetes  
 https://hub.docker.com/search?q=sentry-kubernetes&type=image
+
+cluster administration logging
+https://kubernetes.io/docs/concepts/cluster-administration/logging/
 
 **Bonus** Sentry Helm Charts  
 https://github.com/helm/charts/tree/master/stable/sentry
