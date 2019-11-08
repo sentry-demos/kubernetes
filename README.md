@@ -21,7 +21,7 @@ The docker container runs `sentry-kuernetes.py` which watches/consumes the Kuber
 It decides for you what is an Event or not, but you could amplify the logic with your own by updating `sentry-python.py` and DIY re-making your own image/k8pod. This way, you can decide what constitutes an 'error' or *anything you want to be notified about on Sentry.io*. The source code is here [getsentry/sentry-kubernetes/sentry-kubernetes.py](https://github.com/getsentry/sentry-kubernetes/blob/master/sentry-kubernetes.py)
 
 #### NOTES ON K8S PODS TALKING TO EACH OTHER
-Some commands need to be run for `serviceaccounts` and `clusterroles`, or else the sentry-kubernetes POD will be denied access to reading from the Kubernetes cluster Stream. It's a permissions problem.
+Some commands need to be run for `serviceaccounts` and `clusterroles`, or else the sentry-kubernetes POD will lack permission to reading from the Kubernetes cluster Stream and the stream will be full of Forbidden403's.
 
 #### THE POWER OF SENTRY'S CAPTURE MESSAGE :)
 
@@ -40,8 +40,9 @@ Some commands need to be run for `serviceaccounts` and `clusterroles`, or else t
 #### Steps
 1. `git clone git@github.com:sentry-native/sentry-native.git`
 2. [start minikube](#start-minikube)
-3. [start pods (2)](#START-POD-sentry-kubernetes)
-4. see event on Sentry.io
+3. [configure service accounts and clusterroles](#Configure-Service-Accounts-and-Cluster-Roles)
+4. [start pods (2)](#START-POD-sentry-kubernetes)
+5. See event on Sentry.io
 
 ### Start Minikube
 https://kubernetes.io/docs/setup/learning-environment/minikube/#quickstart  
@@ -49,7 +50,21 @@ https://kubernetes.io/docs/setup/learning-environment/minikube/#quickstart
 minikube start
 ```
 
-### WORKING WITH PODS
+### Configure Service Accounts and Cluster Roles
+```
+kubectl create sa sentry-kubernetes
+kubectl create clusterrole sentry-kubernetes --verb=get,list,watch --resource=events
+kubectl create clusterrolebinding sentry-kubernetes --clusterrole=sentry-kubernetes --serviceaccount=default:sentry-kubernetes
+or
+kubectl create clusterrolebinding sentry-kubernetes --clusterrole=sentry-kubernetes --serviceaccount=sentry-kubernetes
+
+kubectl run sentry-kubernetes \
+  --image getsentry/sentry-kubernetes \
+  --serviceaccount=sentry-kubernetes \
+  --env="DSN=https://cc7b02dae7444f0fb19bd5170c11996b@sentry.io/1783432"
+```
+
+### Working With PODS
 
 #### START POD sentry-kubernetes
 ```
@@ -65,7 +80,7 @@ kubectl apply -f ./cpu-request-limit-2.yaml
 kubectl apply -f ./memory-request-limit-3.yaml
 ```
 
-### STOP/DELETE POD
+#### STOP/DELETE POD
 ```
 kubectl delete deployment hello-minikube
 kubectl delete deployment sentry-kubernetes
@@ -74,7 +89,7 @@ kubectl delete -n default pod memory-demo-3
 kubectl delete -n default pod cpu-demo-2
 ```
 
-### STOP/DELETE Minikube
+#### STOP/DELETE Minikube
 ```
 minikube stop
 minikube delete
@@ -85,7 +100,6 @@ minikube delete
 ```
 # launches http://127.0.0.1:50159/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/#/overview?namespace=default
 minikube dashboard
-
 minikube addons list
 ```
 `kubectl get -h`
@@ -101,11 +115,19 @@ kubectl get namespaces
 kubectl logs <name> <--- to see logs of the pod, not to be confused with Events of the pod.
 kubectl get sa <---get service accounts
 kubectl logs <sentry-kubernetes>
-# show info, look for sa/security/roles/clusterRolebinding
+# shows info, look for sa/security/roles/clusterRolebinding
 kubectl get deployment sentry-kubernetes -o yaml  
 ```
+`serviceaccounts and clusterroles`
+```
+kb get pod sentry-kubernetes-69f9bbdfc7-mfn52 -o yaml
+kb get clusterrole sentry-kubernetes -o yaml
+kb get clusterrolebinding sentry-kubernetes -o yaml
 and
-YES TO-ADD:  
+kb get serviceaccounts/sentry-kubernetes -o yaml
+```
+
+lastly....?
 ```
 kubectl scale deployment sentry-kubernetes --replicas=1
 kubectl scale deployment sentry-kubernetes --replicas=0
@@ -113,29 +135,6 @@ kubectl create clusterrolebinding sentry-kubernetes --clusterrole=sentry-kuberne
 kubectl delete clusterrolebinding sentry-kubernetes
 kubectl create clusterrolebinding sentry-kubernetes --clusterrole=sentry-kubernetes --serviceaccount=default:sentry-kubernetes
 kubectl create clusterrolebinding sentry-kubernetes --clusterrole=sentry-kubernetes --serviceaccount=sentry-kubernetes
-```
-
-DID THIS...
-```
-kubectl create sa sentry-kubernetes
-kubectl create clusterrole sentry-kubernetes --verb=get,list,watch --resource=events
-kubectl create clusterrolebinding sentry-kubernetes --clusterrole=sentry-kubernetes --user=sentry-kubernetes NOOOO
-
-kubectl run sentry-kubernetes \
-  --image getsentry/sentry-kubernetes \
-  --serviceaccount=sentry-kubernetes \
-  --env="DSN=https://cc7b02dae7444f0fb19bd5170c11996b@sentry.io/1783432"
-```
-
-"or else you get Forbidden403 error in logs/stream"  
-and
-```
-kb get pod sentry-kubernetes-69f9bbdfc7-mfn52 -o yaml
-kb get clusterrole sentry-kubernetes -o yaml
-kb get clusterrolebinding sentry-kubernetes -o yaml
-
-and
-kb get serviceaccounts/sentry-kubernetes -o yaml
 ```
 
 
