@@ -154,3 +154,6 @@ https://github.com/helm/charts/tree/master/stable/sentry
 **Bonus** Other developers in the open-source community have made their own versions of this:  
 https://hub.docker.com/search?q=sentry-kubernetes&type=image  
 https://github.com/stevelacy/go-sentry-kubernetes  
+
+
+https://blog.sentry.io/2019/04/17/surface-kubernetes-errors-with-sentry/
